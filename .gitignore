@@ -1,0 +1,3 @@
+# Project exclude paths
+/july_ch_client/target/
+/july_ch_server/target/
