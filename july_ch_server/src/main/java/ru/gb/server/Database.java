@@ -34,6 +34,7 @@ public class Database {
             statement.execute("create table if not exists users " +
                     "(login varchar primary key, password varchar, 'nickname' varchar)");
             addUser("Vasya","pass","Petya");
+            updateUserData("LoG", "Col", "123");
         } catch (ClassNotFoundException | SQLException e) {
             throw new RuntimeException(e);
         }
@@ -66,7 +67,7 @@ public class Database {
             throw new RuntimeException(e);
         }
     }
-
+//
     synchronized static String getData(String table, String column, String criteria, String data) {
         try {
             String query = String.format("select %s from %s where %s = '%s'", column, table, criteria, data);
