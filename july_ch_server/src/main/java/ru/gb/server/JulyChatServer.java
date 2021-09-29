@@ -12,7 +12,7 @@ import java.util.List;
 public class JulyChatServer {
 
     private AuthService authService;
-    private static final int PORT = 2023;
+    private static final int PORT = 8089;
     private List<ChatClientHandler> handlers;
 
 
