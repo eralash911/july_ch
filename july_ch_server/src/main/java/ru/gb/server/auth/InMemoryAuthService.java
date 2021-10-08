@@ -4,7 +4,6 @@ import ru.gb.server.error.UserNotFoundException;
 import ru.gb.server.error.WrongCredentialsException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class InMemoryAuthService implements AuthService{
