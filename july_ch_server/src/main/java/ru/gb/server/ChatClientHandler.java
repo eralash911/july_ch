@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.net.Socket;
 
 public class ChatClientHandler {
-
     private Socket socket;
     private DataOutputStream out;
     private DataInputStream in;
@@ -19,12 +18,11 @@ public class ChatClientHandler {
 
     public ChatClientHandler(Socket socket, JulyChatServer server) {
         try {
-            this.server = server;
             this.socket = socket;
             this.in = new DataInputStream(socket.getInputStream());
             this.out = new DataOutputStream(socket.getOutputStream());
-            this.server = server;
             System.out.println("Handler created");
+            this.server = server;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -32,38 +30,38 @@ public class ChatClientHandler {
 
     public void handle() {
         handlerThread = new Thread(() -> {
-            while (!Thread.currentThread().isInterrupted() && socket.isConnected()) {
-                autorize();
-                try {
+            authorize();
+            try {
+                while (!Thread.currentThread().isInterrupted() && socket.isConnected()) {
                     String message = in.readUTF();
-                    server.broadcast(message);
                     System.out.printf("Client #%s: %s\n", this.currentUser, message);
-                    server.broadcast(message);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    server.broadcastMessage(message);
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                server.removeAuthorizedClientFromList(this);
             }
         });
         handlerThread.start();
     }
 
-
-    // auth: lllll ppppp
-    public void autorize(){
-        while (true){
+    //auth: lllll ppppp
+    private void authorize() {
+        while (true) {
             try {
                 String message = in.readUTF();
-                if (message.startsWith("auth:")){
-                    String [] credentials = message.substring(6).split("\\s");
+                if (message.startsWith("auth:")) {
+                    String[] credentials = message.substring(6).split("\\s");
                     try {
-                        this.currentUser = server.getAuthService().getNicknameByLoginAndPassword(credentials[0],credentials[1]);
-                        server.addAutrizedClientToList(this);
-                        sendMessage("autok : " + this.currentUser);
+                        this.currentUser = server.getAuthService().getNicknameByLoginAndPassword(credentials[0], credentials[1]);
+                        this.server.addAuthorizedClientToList(this);
+                        sendMessage("authok: " + this.currentUser);
                         break;
                     } catch (WrongCredentialsException e) {
-                        sendMessage("Wrong credentials");
-                    }catch (UserNotFoundException e){
-                        sendMessage("");
+                        sendMessage("ERROR: Wrong credentials");
+                    } catch (UserNotFoundException e) {
+                        sendMessage("ERROR: User not found!");
                     }
                 }
             } catch (IOException e) {
@@ -72,12 +70,12 @@ public class ChatClientHandler {
         }
     }
 
-    public void send(String msg) {
-        try {
-            out.writeUTF(msg);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public Thread getHandlerThread() {
+        return handlerThread;
+    }
+
+    public String getCurrentUser() {
+        return currentUser;
     }
 
     public void sendMessage(String message) {
