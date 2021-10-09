@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 public class JulyChatServer {
-    private static final int PORT = 8083;
+    private static final int PORT = 8888;
     private AuthService authService;
     private List<ChatClientHandler> handlers;
     private ExecutorService clientsExecutorService;

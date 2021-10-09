@@ -151,11 +151,3 @@ public class MainChController implements Initializable, MessageProcessor {
         changePasswordPanel.setVisible(true);
     }
 }
-
-
-
-
-
-
-
-
