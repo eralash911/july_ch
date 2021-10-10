@@ -9,8 +9,9 @@ import java.nio.file.Paths;
 import java.sql.*;
 
 public class ClientsDatabaseService {
+
     private static final String DRIVER = "org.sqlite.JDBC";
-    private static final String CONNECTION = "jdbc:sqlite:db/clients.db";
+    private static final String CONNECTION = "jdbc:sqlite:ccclients.db";
     private static final String GET_USERNAME = "select username from clients where login = ? and password = ?;";
     private static final String CHANGE_USERNAME = "update clients set username = ? where username = ?;";
     private static final String CREATE_DB = "create table if not exists clients (id integer primary key autoincrement," +
@@ -21,13 +22,18 @@ public class ClientsDatabaseService {
 
     private Connection connection;
 
+
+
+
     private ClientsDatabaseService() {
         try {
-            connect();
+            openDatabase(Paths.get("ccclients.db"));
+            createDb();
+           connect();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
-//        createDb();
+
     }
 
     public static ClientsDatabaseService getInstance() {
@@ -68,6 +74,16 @@ public class ClientsDatabaseService {
             st.execute(INIT_DB);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
+        }
+    }
+
+    private static void openDatabase(Path dbPath) {
+        if (!Files.exists(dbPath)) {
+            try {
+                Files.createFile(dbPath);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
