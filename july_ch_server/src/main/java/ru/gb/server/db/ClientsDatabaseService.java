@@ -1,17 +1,12 @@
-package ru.gb.server;
+package ru.gb.server.db;
 
 import ru.gb.server.error.UserNotFoundException;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.*;
 
 public class ClientsDatabaseService {
-
     private static final String DRIVER = "org.sqlite.JDBC";
-    private static final String CONNECTION = "jdbc:sqlite:ccclients.db";
+    private static final String CONNECTION = "jdbc:sqlite:clients.db";
     private static final String GET_USERNAME = "select username from clients where login = ? and password = ?;";
     private static final String CHANGE_USERNAME = "update clients set username = ? where username = ?;";
     private static final String CREATE_DB = "create table if not exists clients (id integer primary key autoincrement," +
@@ -22,18 +17,13 @@ public class ClientsDatabaseService {
 
     private Connection connection;
 
-
-
-
     private ClientsDatabaseService() {
         try {
-            openDatabase(Paths.get("ccclients.db"));
-            createDb();
-           connect();
+            connect();
         } catch (ClassNotFoundException | SQLException e) {
             e.printStackTrace();
         }
-
+  //      createDb();
     }
 
     public static ClientsDatabaseService getInstance() {
@@ -77,16 +67,6 @@ public class ClientsDatabaseService {
         }
     }
 
-    private static void openDatabase(Path dbPath) {
-        if (!Files.exists(dbPath)) {
-            try {
-                Files.createFile(dbPath);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-    }
-
     private void connect() throws ClassNotFoundException, SQLException {
         Class.forName(DRIVER);
         connection = DriverManager.getConnection(CONNECTION);
@@ -102,3 +82,4 @@ public class ClientsDatabaseService {
         }
     }
 }
+

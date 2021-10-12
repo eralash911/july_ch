@@ -1,6 +1,7 @@
 package ru.gb.server.auth;
 
-import ru.gb.server.ClientsDatabaseService;
+import ru.gb.server.db.ClientsDatabaseService;
+
 import java.sql.SQLException;
 
 

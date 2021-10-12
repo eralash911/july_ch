@@ -32,6 +32,7 @@ public class MainChController implements Initializable, MessageProcessor {
     public ListView<String> contactList;
     public TextField inputField;
     public Button btnSendMessage;
+    private History history;
 
 
     public void mockAction(ActionEvent actionEvent) {
@@ -50,6 +51,7 @@ public class MainChController implements Initializable, MessageProcessor {
         if (recipient.equals("ALL")) message = "/" + recipient + REGEX + text;
         else message = "/w" + REGEX + recipient + REGEX + text;
         chatMessageService.send(message);
+        history.writeHistory(String.format("[ME] %s\n", text));
         inputField.clear();
     }
 
@@ -93,6 +95,12 @@ public class MainChController implements Initializable, MessageProcessor {
                 this.nickName = parsedMessage[1];
                 loginPanel.setVisible(false);
                 mainChatPanel.setVisible(true);
+                this.history = new History(nickName);
+                List<String> hist = history.readHistory();
+                for (String s: hist
+                     ) {
+                        mainChatArea.appendText(s + System.lineSeparator());
+                }
                 break;
             case "ERROR:":
                 showError(parsedMessage[1]);
@@ -113,6 +121,7 @@ public class MainChController implements Initializable, MessageProcessor {
                 break;
             default:
                 mainChatArea.appendText(parsedMessage[0] + System.lineSeparator());
+                history.writeHistory(parsedMessage[0]);
         }
 
     }

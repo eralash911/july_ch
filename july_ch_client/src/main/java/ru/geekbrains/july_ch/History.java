@@ -1,6 +1,6 @@
 package ru.geekbrains.july_ch;
 
-import javax.imageio.IIOException;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,7 +11,7 @@ public class History {
     private static final int RECOVERABLE_MESSAGE_QUANTITY = 100;
     private static final String HISTORY_PATH = "history/";
     private File messageHistoryFile;
-    private String historyPath;
+
 
     public History(String login) {
         this.login = login;
@@ -52,7 +52,7 @@ public class History {
         System.out.println("History for" + res.size());
         return res;
     }
-    public void writeHistory(String message){
+    public void writeHistory( String message){
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(messageHistoryFile, true))){
             writer.write(message);
         } catch (IOException e) {
